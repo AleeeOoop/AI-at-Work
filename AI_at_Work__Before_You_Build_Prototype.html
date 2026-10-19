@@ -1,0 +1,584 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AI at Work: Before You Build</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: the workflow is the centerpiece. Stage 1: a few dials beside the layered workflow, with the trade-off and the selected lens underneath. Stage 2: what the redesign amounts to. Stage 3: the conversation with your leader. */
+:root{
+  --bg:#f7f4f1; --surface:#ffffff; --sunk:#f0ebe6; --ink:#262524; --muted:#6b645e; --line:#e7dad5;
+  --teal:#1c7789; --teal-soft:#dcf0f3; --violet:#7a4fc7; --violet-soft:#eee6fb; --orange:#b85a1e; --orange-soft:#fbe7d9; --olive:#6f7420; --olive-soft:#eff0cf;
+  --display:"Figtree","Segoe UI",system-ui,sans-serif;
+  --body:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1b1918; --surface:#262322; --sunk:#312d2b; --ink:#f2ede9; --muted:#aaa19a; --line:#433c38;
+  --teal:#6cc3d3; --teal-soft:#1c3a40; --violet:#b99cf2; --violet-soft:#33284b; --orange:#f0a273; --orange-soft:#46291a; --olive:#c9cd6e; --olive-soft:#35361c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1b1918; --surface:#262322; --sunk:#312d2b; --ink:#f2ede9; --muted:#aaa19a; --line:#433c38;
+  --teal:#6cc3d3; --teal-soft:#1c3a40; --violet:#b99cf2; --violet-soft:#33284b; --orange:#f0a273; --orange-soft:#46291a; --olive:#c9cd6e; --olive-soft:#35361c; color-scheme:dark }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:32px 110px;display:flex;flex-direction:column;gap:52px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15;font-weight:600}
+h1{font-size:clamp(28px,4.4vw,42px);letter-spacing:-.015em}
+h2{font-size:24px;letter-spacing:-.01em}
+h3{font-size:15.5px}
+h3.sub{font-size:18px;margin-top:10px;display:flex;align-items:center;gap:8px}
+p{margin:0;max-width:66ch;font-family:var(--serif)}
+a{color:inherit}
+.lede{color:var(--muted);font-size:17px}
+.goal{font-family:var(--display);font-size:clamp(19px,2.5vw,24px);font-weight:500;line-height:1.3;max-width:38ch}
+.eyebrow{font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.note{font-size:13px;color:var(--muted)}
+.block{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font-family:var(--body)}
+button:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.btn{font-weight:600;font-size:13px;padding:8px 14px;border-radius:10px;border:1px solid var(--violet);background:var(--violet);color:var(--surface);cursor:pointer}
+.btn.ghost{background:none;color:var(--violet)}
+.btn.sm{padding:4px 10px;font-size:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.stagehead{display:flex;align-items:center;gap:12px}
+.stagehead b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:14px;background:var(--ink);color:var(--bg);flex:none}
+header{display:flex;flex-direction:column;gap:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-weight:500;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:7px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--violet-soft);border-color:var(--violet)}
+.chip.sm{font-size:12.5px;padding:4px 11px}
+.chip.dark[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.i{width:17px;height:17px;border-radius:50%;border:1px solid var(--muted);background:none;color:var(--muted);font:italic 600 11px/1 var(--serif);cursor:help;padding:0;flex:none;display:inline-grid;place-items:center;vertical-align:middle;text-transform:none;letter-spacing:0}
+.i:hover,.i:focus-visible{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#pop{position:absolute;z-index:20;width:300px;max-width:calc(100vw - 32px);background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.45;pointer-events:none;display:flex;flex-direction:column;gap:6px}
+#pop b{font-size:13.5px}
+#pop span{font-family:var(--serif)}
+#pop .eg{opacity:.85}
+
+.stage{display:grid;grid-template-columns:280px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:980px){.stage{grid-template-columns:minmax(0,1fr)}}
+.dial{display:flex;flex-direction:column;gap:2px}
+.dial .dl{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13.5px}
+.dial input{width:100%;accent-color:var(--violet);margin:2px 0}
+.dial .now{font:14px/1.3 var(--serif);color:var(--ink)}
+.hours{background:var(--sunk);border-radius:12px;padding:10px 12px;font:14px/1.4 var(--serif)}
+.hours b{font-family:var(--display);font-size:20px}
+.grp{display:flex;flex-direction:column;gap:6px}
+.inp{font:500 14px var(--body);padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);width:100%;min-width:0}
+.inp.title{font:600 17px var(--display);border-color:transparent;background:var(--sunk)}
+select.inp{width:auto;flex:none;min-width:104px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.two,.three{grid-template-columns:minmax(0,1fr)}}
+.panel svg{width:100%;height:auto;display:block;color:var(--ink)}
+.panel svg text{font-family:var(--body);fill:currentColor}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px}
+.legend span{display:flex;gap:6px;align-items:baseline}
+.legend i{width:10px;height:10px;border-radius:2px;flex:none;transform:translateY(1px)}
+.k-keep{background:var(--olive)} .k-share{background:var(--teal)} .k-hand{background:var(--violet)} .k-flag{background:var(--orange);border-radius:50%!important}
+
+.insp{background:var(--sunk);border-radius:14px;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px 20px}
+@media (max-width:700px){.insp{grid-template-columns:minmax(0,1fr)}}
+.insp h3{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.facts{display:flex;flex-direction:column;gap:5px;font-size:13.5px}
+.facts label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.facts input{accent-color:var(--violet);margin-top:3px}
+.seg{display:flex;gap:2px}
+.seg button{flex:1;font-size:13px;font-weight:600;padding:7px 4px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.seg button:first-child{border-radius:10px 0 0 10px}.seg button:last-child{border-radius:0 10px 10px 0}
+.seg button[aria-pressed="true"][data-c="keep"]{background:var(--olive);color:var(--surface);border-color:var(--olive)}
+.seg button[aria-pressed="true"][data-c="share"]{background:var(--teal);color:var(--surface);border-color:var(--teal)}
+.seg button[aria-pressed="true"][data-c="hand"]{background:var(--violet);color:var(--surface);border-color:var(--violet)}
+.seg small{display:block;font-size:9.5px;font-weight:700;letter-spacing:.08em;opacity:.85}
+
+.lane{fill:var(--sunk)}
+.lanelab{font-size:10px;font-weight:700;letter-spacing:.06em;fill:var(--muted)}
+.stp{fill:var(--surface);stroke:var(--line)} .stp.td{fill:transparent;stroke-dasharray:3 3;stroke:var(--muted)} .sg.sel .stp.td{stroke-dasharray:none} .sg{cursor:pointer} .sg.sel .stp{stroke:var(--ink);stroke-width:2} .sg.off{opacity:.3}
+.tag{font-size:8.5px;font-weight:700;letter-spacing:.1em;fill:var(--muted)}
+.nm{font-size:10px} .lean{font-size:9.5px;font-weight:700}
+.f-keep{fill:var(--olive)} .f-hand{fill:var(--violet)} .f-share{fill:var(--teal)} .f-today{fill:var(--muted)}
+.f-en{fill:var(--teal)} .f-bl{fill:var(--orange)}
+.s-en{stroke:var(--teal);fill:none} .s-bl{stroke:var(--orange);fill:none} .s-mu{stroke:var(--muted);fill:none}
+.sm{font-size:9.5px} .smm{font-size:9.5px;fill:var(--muted)}
+.idea{fill:var(--surface);stroke:var(--ink);stroke-width:1.5}
+.pill{fill:var(--surface);stroke:var(--line)}
+.cond{fill:var(--surface);stroke:var(--line)} .cond.on{fill:var(--violet-soft);stroke:var(--violet)} .cond.off{opacity:.35}
+
+.status{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);white-space:nowrap}
+.status.good{background:var(--teal-soft);border-color:var(--teal)} .status.open{border-style:dashed;border-color:var(--muted)} .status.warn{background:var(--orange-soft);border-color:var(--orange)}
+ul.tight{margin:0;padding-left:18px;font:14px/1.45 var(--serif);display:flex;flex-direction:column;gap:4px}
+
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.cards>div{background:var(--surface);padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.big{font-family:var(--display);font-size:19px;font-weight:600;line-height:1.2}
+@media (max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.cards{grid-template-columns:minmax(0,1fr)}}
+.ladder{display:flex;flex-direction:column-reverse;gap:3px;font-size:12.5px}
+.ladder div{padding:4px 9px;border-radius:6px;background:var(--sunk);color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.ladder div.on{background:var(--violet);color:var(--surface);font-weight:600}
+.ladder div.grow{background:var(--violet-soft);color:var(--ink);border:1px dashed var(--violet)}
+.ladder small{font-size:10px;letter-spacing:.04em;white-space:nowrap;opacity:.85}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;font-size:13px;margin:0}
+.kv dt{font-weight:600;color:var(--muted)} .kv dd{margin:0;font-family:var(--serif)}
+.firm{font:14px/1.45 var(--serif)}
+
+.io{display:flex;align-items:stretch}
+.io .st{flex:1 1 0;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.io .st b{font-family:var(--display);font-size:15px;font-weight:600;line-height:1.25}
+.io .st p{font-size:13.5px}
+.io .ar{flex:0 0 26px;display:grid;place-items:center;color:var(--muted);font-weight:700}
+@media (max-width:900px){.io{flex-direction:column}.io .ar{flex-basis:22px;transform:rotate(90deg)}}
+
+.sheet{display:grid;grid-template-columns:164px repeat(4,minmax(0,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.sheet>div{background:var(--surface);padding:12px 14px;font:14px/1.45 var(--serif);min-width:0}
+.sheet>.h{font:700 11px/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:var(--sunk)}
+.sheet>.l{font-family:var(--body);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.sheet>.l b{font-family:var(--display);font-size:15.5px}
+@media (max-width:860px){.sheet{grid-template-columns:minmax(0,1fr)}.sheet>.h{display:none}.sheet>div[data-h]::before{content:attr(data-h);display:block;font:700 10.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}.sheet>.l{background:var(--sunk)}}
+.life{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:2px solid var(--ink)}
+.life>div{padding:12px 16px 0 0;display:flex;flex-direction:column;gap:3px;font-size:13.5px}
+.life b{font-family:var(--display);font-size:15px}
+.life span{font-family:var(--serif);color:var(--muted)}
+@media (max-width:760px){.life{grid-template-columns:minmax(0,1fr);border-top:0;border-left:2px solid var(--ink)}.life>div{padding:0 0 14px 14px}}
+.rungs{display:flex;flex-direction:column-reverse;gap:4px}
+.rung{border-radius:10px;padding:8px 10px;background:var(--sunk);font-size:13px;display:flex;flex-direction:column}
+.rung:nth-child(2){margin-left:8%}.rung:nth-child(3){margin-left:16%}.rung:nth-child(4){margin-left:24%}
+.rung.aim{background:var(--violet-soft);outline:1.5px solid var(--violet)}
+.rung b{font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.rung span{font-family:var(--serif)}
+.num3{display:flex;flex-direction:column;gap:8px}
+.num3>div{border-left:4px solid var(--teal);padding-left:10px;display:flex;flex-direction:column}
+.num3>div.q{border-color:var(--violet)} .num3>div.g{border-color:var(--orange)}
+.num3 b{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.num3 span{font-family:var(--serif);font-size:14.5px}
+.tl>div{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;padding-bottom:12px;position:relative}
+.tl>div::before{content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);background:var(--surface);margin-top:3px;z-index:1}
+.tl>div:not(:last-child)::after{content:"";position:absolute;left:6px;top:14px;bottom:-4px;width:2px;background:var(--line)}
+.tl b{display:block;font-size:13.5px} .tl span{font-family:var(--serif);font-size:13.5px;color:var(--muted)}
+
+.guide{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.fc{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:8px;font-size:14px}
+.fc[aria-expanded="true"]{border-color:var(--ink)}
+.fc b{font-family:var(--display);font-size:16px;font-weight:600}
+.fc .teaser{font-family:var(--serif);color:var(--muted)}
+.fc .back{font-family:var(--serif)}
+.fc .back i{font-family:var(--body);font-style:normal;font-weight:600}
+
+body.touring [data-tour]{opacity:.28;transition:opacity .2s}
+body.touring [data-tour].spot{opacity:1;outline:2px solid var(--violet);outline-offset:4px;border-radius:18px}
+#coach{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:min(560px,calc(100vw - 32px));background:var(--ink);color:var(--bg);border-radius:16px;padding:14px 16px;z-index:30;display:flex;flex-direction:column;gap:8px}
+#coach p{max-width:none;font-size:14.5px}
+#coach .btn{border-color:var(--bg);background:var(--bg);color:var(--ink)}
+#coach .btn.ghost{background:none;color:var(--bg)}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Administration &amp; Finance</span>
+    <h1>AI at Work: Before You Build</h1>
+    <p class="goal">You can point AI at almost any piece of work. This helps you see whether you should, how, and what stands in the way.</p>
+    <p class="lede">It gives no verdict. It lays your work out as steps, lets you try redesigning it, and prepares the conversation with your leader.</p>
+    <div class="row"><button class="btn" id="tour-start">Walk me through it</button><span class="note">Hover any <button class="i" data-i="hover" aria-label="About the info markers">i</button> for a definition and an example.</span></div>
+  </header>
+
+  <section class="block" data-tour="ideas">
+    <h3 class="sub" style="margin-top:0">The thinking behind this</h3>
+    <p class="note">Ten ideas the page is built on. Open any that are new to you.</p>
+    <div class="guide" id="guide"></div>
+  </section>
+
+  <section class="block" id="see">
+    <div class="stagehead"><b>1</b><h2>See the work, and try redesigning it</h2></div>
+    <div class="block" data-tour="ex" id="examples"></div>
+    <div class="stage">
+      <aside class="panel" data-tour="rail">
+        <span class="eyebrow">Describe the work</span>
+        <div class="hours" id="hours"></div>
+        <div id="dials" class="block" style="gap:16px"></div>
+        <div class="grp"><span class="dial"><span class="dl">What do you mainly want from it? <button class="i" data-i="gain" aria-label="About the gain">i</button></span></span><div class="chips" id="gain"></div></div>
+      </aside>
+      <div class="block">
+        <div class="panel" data-tour="flow">
+          <div class="row"><input class="inp title" id="idea-name" maxlength="60" aria-label="Name of the idea" style="flex:1;min-width:200px"><button class="i" data-i="layers" aria-label="About the layered workflow">i</button></div>
+          <div class="row"><span class="eyebrow">Look through a lens <button class="i" data-i="lenses" aria-label="About the five lenses">i</button></span><div class="chips" id="lens"></div></div>
+          <div id="svgA"></div>
+          <div class="legend"><span><i class="k-keep"></i><b>Keep</b> a person does it and answers for it</span><span><i class="k-share"></i><b>Share</b> AI prepares, a person finishes or checks</span><span><i class="k-hand"></i><b>Hand to AI</b> a person sees only exceptions</span><span><i class="k-flag"></i>a step that needs care <button class="i" data-i="leans" aria-label="About keep, share and hand to AI">i</button></span><span>Top layer: who benefits <button class="i" data-i="benefit" aria-label="About who benefits">i</button></span><span>Bottom layer: unit conditions <button class="i" data-i="conds" aria-label="About unit conditions">i</button></span></div>
+          <div class="insp" id="insp" data-tour="step"></div>
+        </div>
+        <div class="two">
+          <div class="panel" data-tour="trade"><h3>The trade-off of your redesign <button class="i" data-i="trade" aria-label="About the trade-off curve">i</button></h3><div id="svgT"></div><p class="note" id="capT"></p></div>
+          <div class="panel" data-tour="lensp" id="lensp" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="read">
+    <div class="stagehead"><b>2</b><h2>What your redesign amounts to</h2></div>
+    <div class="block" data-tour="result"><div class="cards" id="cards"></div><p class="firm" id="firm"></p></div>
+    <h3 class="sub">From input to output <button class="i" data-i="io" aria-label="About input to output">i</button></h3>
+    <div class="io" id="io" data-tour="io"></div>
+  </section>
+
+  <section class="block" id="talk">
+    <div class="stagehead"><b>3</b><h2>Take it to your leader</h2></div>
+    <p class="lede">You have the idea. Your leader has the wider view. Neither of you can settle these five questions alone, and none is settled for good.</p>
+    <div data-tour="sheet" class="block">
+      <div class="sheet" id="sheet"></div>
+      <p class="note">Once it is running, come back to all five. Skills, costs, rules and tools all move. <button class="i" data-i="life" aria-label="About the stages of an idea">i</button></p>
+      <div class="row"><button class="btn" id="copy">Copy as an agenda</button><span class="note" id="copy-msg" aria-live="polite"></span></div>
+      <div class="panel" id="next"></div>
+    </div>
+    <h3 class="sub">How you would tell it worked <button class="i" data-i="measure" aria-label="About measuring">i</button></h3>
+    <div class="three" data-tour="measure">
+      <div class="panel"><span class="eyebrow">The measure ladder <button class="i" data-i="mladder" aria-label="About the measure ladder">i</button></span><div class="rungs" id="rungs"></div></div>
+      <div class="panel"><span class="eyebrow">Three numbers <button class="i" data-i="mthree" aria-label="About the three numbers">i</button></span><div class="num3" id="num3"></div></div>
+      <div class="panel"><span class="eyebrow">The trial <button class="i" data-i="mtrial" aria-label="About the trial">i</button></span><div class="tl" id="tl"></div></div>
+    </div>
+  </section>
+</div>
+<div id="pop" role="tooltip" hidden></div>
+<div id="coach" hidden><span class="eyebrow" id="coach-n" style="color:inherit;opacity:.7"></span><p id="coach-t"></p><div class="row"><button class="btn ghost sm" id="coach-back">Back</button><button class="btn sm" id="coach-next">Next</button><button class="btn ghost sm" id="coach-end">Close</button></div></div>
+
+<script>
+/* ================= Content ================= */
+const KINDS=[
+ {id:"processing",g:0,n:"Processing requests",u:"request"},{id:"answering",g:0,n:"Answering questions",u:"question"},{id:"coordinating",g:0,n:"Coordinating people",u:"occasion"},{id:"monitoring",g:0,n:"Monitoring and checking",u:"check"},
+ {id:"producing",g:1,n:"Producing documents",u:"document"},{id:"analyzing",g:1,n:"Analyzing information",u:"analysis"},{id:"deciding",g:1,n:"Deciding and planning",u:"decision"},{id:"learning",g:1,n:"Learning something new",u:"topic"}];
+const GROUPS=["Work that flows to other people","Work you or your team do yourselves"];
+const kindOf=id=>KINDS.find(k=>k.id===id)||KINDS[0];
+const DIALS=[
+ {id:"freq",q:"How often does it come up?",stops:["A few times a year","Monthly","Weekly","Daily","Many times a day"],d:"How often the work repeats. Together with how long it takes, this is what the work costs today.",e:"Expense reports arrive daily. A response to a five-year audit does not."},
+ {id:"time",q:"How long does it take each time?",stops:["Minutes","About an hour","Half a day","A few days","Weeks"],d:"The hands-on time for one occurrence, for one person.",e:"Checking one expense report takes minutes. A variance commentary takes days."},
+ {id:"differ",q:"How much does each {u} differ from the last?",stops:["Identical","Same shape, different details","A few familiar types","Often something new","Never the same twice"],d:"Work that repeats in the same shape can follow rules. Work that is new each time needs judgment and small experiments.",e:"A receipt check has the same shape every time. A workplace complaint never does."},
+ {id:"judge",q:"How much of it is judgment?",stops:["All known rules","Mostly rules","About half","Mostly judgment","All judgment"],d:"Rules can be written down and checked. Judgment weighs things that cannot be fully written down, and someone has to answer for it.",e:"Applying a per-diem table is rules. Deciding whether an exception is reasonable is judgment."},
+ {id:"good",q:"How easy is it to tell good work from bad?",stops:["Anyone can tell","A quick check tells you","It takes a trained eye","Only an expert can tell","Even experts disagree"],d:"AI output always needs checking. If telling good from bad is hard, checking costs nearly as much as doing the work, and errors slip through.",e:"A mismatched total is obvious. A subtly wrong explanation of a budget variance is not."},
+ {id:"reach",q:"Who does it reach?",stops:["Only me","My team","Other units","People across campus","Students or the public"],d:"How far the result travels. The further it reaches, the more it has to be built, supported and explained properly.",e:"Your own meeting notes reach only you. A purchase request form reaches every department."},
+ {id:"want",q:"Do the people who do it want help with it?",stops:["They are resisting","They are wary","They have not said","They are open to it","They are asking for it"],d:"New ways of working spread when people see an advantage, can try them safely, and feel they fit.",e:"A team that asked for help with a tedious check will use it. A team handed a tool will route around it."}
+];
+const GAINS=[["time","Time back"],["quality","Better quality"],["speed","Faster turnaround"],["new","Something we could not do before"]];
+const TYPES=[["gather","Gather"],["analyze","Analyze"],["draft","Draft"],["decide","Decide"],["act","Act"]];
+const FACTS=[["v","People outside the team see this step"],["s","It uses sensitive data"],["c","A mistake here is costly"],["u","It cannot be undone"],["y","It draws on a system or source"]];
+const S_=(n,t,f)=>({n,t,f:Object.assign({v:0,s:0,c:0,u:0,y:""},f||{})});
+const D_=(freq,time,differ,judge,good,reach,want)=>({freq,time,differ,judge,good,reach,want});
+const EXAMPLES=[
+ {id:"expense",kind:"processing",name:"Expense report review",d:D_(4,2,2,2,2,2,4),gain:"speed",bn:1,steps:[S_("Traveler submits report","act",{v:1,y:"Expense system"}),S_("Check against policy","analyze"),S_("Resolve exceptions","decide"),S_("Approve","decide",{c:1}),S_("Pay","act",{v:1,u:1,y:"Finance system"})],
+  m:{use:"Reports run through the check",output:"Reports pre-checked each week",outcome:"Days from submission to payment",impact:"Travelers stop chasing reimbursements",quality:"Share of flagged issues that were real",guard:"Policy breaches that slip through"}},
+ {id:"purchase",kind:"processing",name:"Purchase request intake",d:D_(4,2,2,2,2,4,4),gain:"speed",bn:2,steps:[S_("Requester submits form","act",{v:1,y:"Request form"}),S_("Check it is complete and allowed","analyze",{y:"Procurement system"}),S_("Route for approval","decide"),S_("Approve","decide",{c:1}),S_("Create the order","act",{v:1,y:"Finance system"})],
+  m:{use:"Requests submitted through it",output:"Requests routed without rework",outcome:"Days from request to order",impact:"Departments get what they need sooner",quality:"Requests returned as incomplete",guard:"Orders placed outside policy"}},
+ {id:"policy",kind:"answering",name:"Policy and procedure questions",d:D_(5,1,2,2,3,4,3),gain:"speed",bn:1,steps:[S_("Person asks a question","act",{v:1}),S_("Find the right policy","gather",{y:"Policy library"}),S_("Interpret it for this question","analyze"),S_("Answer","act",{v:1}),S_("Pass on the odd ones","decide")],
+  m:{use:"Questions asked of it",output:"Answers given",outcome:"Time to a correct answer",impact:"Fewer repeat questions, staff time freed",quality:"Share of answers a specialist would agree with",guard:"People who could not reach a person when they needed one"}},
+ {id:"meeting",kind:"coordinating",name:"Meeting notes and follow-ups",d:D_(4,2,2,2,2,2,4),gain:"time",bn:1,steps:[S_("Capture what was said","gather",{y:"Meeting recording"}),S_("Pull out decisions and actions","analyze"),S_("Agree who owns each action","decide"),S_("Send the follow-up","act",{v:1}),S_("Chase open actions","act")],
+  m:{use:"Meetings run through it",output:"Follow-ups sent the same day",outcome:"Actions completed by their due date",impact:"Fewer meetings about the last meeting",quality:"Actions recorded wrongly or missed",guard:"Sensitive remarks circulated by mistake"}},
+ {id:"onboard",kind:"coordinating",name:"New employee onboarding",d:D_(3,3,2,2,2,3,4),gain:"quality",bn:3,steps:[S_("Offer is accepted","act",{v:1,y:"HR system"}),S_("Work out what this hire needs","analyze"),S_("Request accounts and equipment","act",{y:"IT system"}),S_("Chase what is late","gather"),S_("Welcome on day one","act",{v:1})],
+  m:{use:"New hires run through it",output:"Tasks requested on time",outcome:"Share of hires fully set up on day one",impact:"New staff productive sooner",quality:"Tasks that had to be redone",guard:"Accounts granted that should not have been"}},
+ {id:"reconcile",kind:"monitoring",name:"Account reconciliation",d:D_(2,3,2,2,1,2,4),gain:"quality",bn:2,steps:[S_("Pull both sets of records","gather",{y:"Finance system"}),S_("Match the entries","analyze"),S_("Investigate what does not match","analyze",{c:1}),S_("Decide the correction","decide",{c:1}),S_("Post the adjustment","act",{u:1,y:"Finance system"})],
+  m:{use:"Reconciliations run through it",output:"Entries matched automatically",outcome:"Days to close the reconciliation",impact:"An earlier, cleaner month-end",quality:"Matches a person had to undo",guard:"Mismatches wrongly cleared"}},
+ {id:"report",kind:"producing",name:"A recurring report",d:D_(2,3,2,3,3,3,4),gain:"time",bn:2,steps:[S_("Collect updates from the team","gather"),S_("Pull the figures","gather",{y:"Reporting system"}),S_("Write the draft","draft"),S_("Decide what to highlight","decide",{c:1}),S_("Send to leadership","act",{v:1,c:1})],
+  m:{use:"Reports drafted with it",output:"Drafts produced",outcome:"Hours to produce the report",impact:"Leaders get it sooner and read it",quality:"Edits needed before sending",guard:"Errors that reach leadership"}},
+ {id:"variance",kind:"analyzing",name:"Budget variance commentary",d:D_(2,4,2,3,3,3,4),gain:"time",bn:2,steps:[S_("Pull actuals and budget","gather",{y:"Finance system"}),S_("Find the variances","analyze"),S_("Explain what drove them","analyze",{c:1}),S_("Decide what to flag","decide",{c:1}),S_("Send to leadership","act",{v:1,c:1})],
+  m:{use:"Analysts who tried it",output:"Draft commentaries produced",outcome:"Hours to produce the monthly commentary",impact:"Leaders act on variances sooner",quality:"Edits needed before sending",guard:"Wrong explanations that reach leadership"}},
+ {id:"decision",kind:"deciding",name:"Preparing for a decision",d:D_(2,4,5,5,4,2,4),gain:"quality",bn:2,steps:[S_("Frame the question","decide"),S_("Gather what is known","gather"),S_("Lay out the options","analyze"),S_("Test them against objections","analyze"),S_("Make the call","decide",{c:1})],
+  m:{use:"Decisions prepared with it",output:"Option papers produced",outcome:"Decisions made with the options laid out in advance",impact:"Fewer decisions revisited",quality:"Options or objections it missed",guard:"Decisions shaped by a claim nobody checked"}},
+ {id:"hr",kind:"deciding",name:"Hiring or HR case handling",d:D_(2,4,5,5,4,3,2),gain:"quality",bn:3,steps:[S_("Case is raised","act",{v:1}),S_("Gather the record","gather",{s:1,y:"HR system"}),S_("Assess the situation","analyze",{c:1}),S_("Decide the outcome","decide",{c:1,u:1}),S_("Tell the person","act",{v:1,c:1})],
+  m:{use:"Cases where it was consulted",output:"Records gathered",outcome:"Days to assemble a complete record",impact:"Fairer, better-documented outcomes",quality:"Missing or wrong items in the record",guard:"Any decision influenced without review"}},
+ {id:"learning",kind:"learning",name:"Getting up to speed on a new policy",d:D_(2,3,4,3,4,1,5),gain:"new",bn:1,steps:[S_("Find the source material","gather"),S_("Read and summarize it","analyze"),S_("Test your understanding","analyze"),S_("Work out what it means for your work","decide"),S_("Explain it to the team","act",{v:1})],
+  m:{use:"Topics studied with it",output:"Summaries produced",outcome:"Days until you can apply it unaided",impact:"The team picks it up from you",quality:"Things it got wrong that you caught",guard:"Things it got wrong that you did not catch"}},
+ {id:"own",kind:"processing",name:"My own idea",d:D_(3,2,3,3,3,2,3),gain:"time",bn:2,steps:[S_("First step","gather"),S_("Second step","analyze"),S_("Third step","draft"),S_("Fourth step","decide"),S_("Last step","act",{v:1})],
+  m:{use:"How many people used it",output:"What it produced",outcome:"The one number that shows the work got better",impact:"What that change means for the unit",quality:"How often its output needed fixing",guard:"The thing that must not get worse"}}
+];
+const PATTERNS={
+ automate:{n:"Mostly AI, with a person on exceptions",t:"Most steps are handed over. A person sets the limits and takes whatever falls outside them.",role:"Exception handler",rt:"You define what good looks like, set the limits, and deal with whatever falls outside.",caution:"Unreviewed output at scale",ct:"One wrong output is easy to fix. The same error repeated a thousand times is not. Sample the results on a schedule.",grow:"Writing clear rules and spotting what falls outside them",fade:"Doing the routine work by hand, which you still need when the system is down"},
+ approve:{n:"AI prepares, a person approves",t:"AI does the legwork on some steps. A person reviews or decides before anything counts.",role:"Approver",rt:"You read what AI prepared and accept, change, or reject it. Your name is on the result.",caution:"Rubber-stamping",ct:"Approving many drafts quickly turns into approving without reading. Keep the batch small enough to really look.",grow:"Reviewing quickly without skimming",fade:"Drafting from a blank page"},
+ lead:{n:"A person leads, AI as thinking partner",t:"People do most of the work. AI helps on a step or two, offering analysis and options.",role:"Driver",rt:"You frame the question, weigh the trade-offs, and make the call.",caution:"Skills fading",ct:"Lean on AI every time and the judgment you rely on weakens without you noticing. Do some of this work unaided.",grow:"Asking sharper questions and challenging the answers",fade:"The analysis itself, if AI always takes the first pass"},
+ probe:{n:"Try small and learn",t:"It varies a lot each time, but nothing here is costly or permanent. Try it on real work, see what happens, then design.",role:"Driver, learning as you go",rt:"You run the trial, compare AI's work with your own, and decide what to keep.",caution:"A trial that never ends",ct:"Easy experiments multiply and nobody stops them. Set a date to decide: keep, change, or stop.",grow:"Running a fair comparison between AI's work and your own",fade:"Little, at this scale"},
+ leave:{n:"Leave it with people",t:"Every step stays with a person. That is a legitimate answer.",role:"Fully hands-on",rt:"People do this work. Revisit it when the conditions change.",caution:"Building it because you can",ct:"Being able to build something is not a reason to.",grow:"Nothing new",fade:"Nothing"}
+};
+const BUILDS=["A saved prompt","A configured assistant","A multi-step workflow","An agent that takes actions","A custom app"];
+const EFFORT=[[1,1,1],[1,1,2],[2,2,2],[3,3,3],[3,3,2]];
+const CONDS=[["lead","Leader"],["adapt","Support"],["exp","Register"],["work","Work map"],["skills","Skills"],["data","Data rules"],["measure","Measures"]];
+const LENSES={
+ all:{n:"All",conds:[]},
+ des:{n:"Desirable",q:"Does this solve a problem that matters?",think:["Who feels this problem, and how often?","Would the people it reaches notice the difference?","Is the redesign touching the step where the work actually waits?"],conds:["lead"],ask:"Is this one of the problems that matters most to the unit this year?",settle:"Whether this is worth a trial now, later, or not at all.",when:"Explore. Before anything is built."},
+ fea:{n:"Feasible",q:"Can we build it and run it reliably?",think:["Where do the inputs come from, and which source is the record?","Can those sources be read from, and by what?","Who can judge whether the output is good?"],conds:["data","work","skills"],ask:"Who owns this data and these systems, and who can say yes to using them?",settle:"The smallest version we can test with what we already have.",when:"Experiment. Test it on real work."},
+ via:{n:"Viable",q:"Is the value worth the cost of keeping it going?",think:["What does it take to make, run and check, not only to build?","Who owns it when you move on?","What would the unit stop doing to make room?"],conds:["measure","adapt"],ask:"Who would own this after me, and what would we stop doing to make room?",settle:"The number that would show it worked, and what it is today.",when:"Implement. Before it becomes routine."},
+ res:{n:"Responsible",q:"Can we do it safely, legally and fairly?",think:["Which steps touch sensitive data, cost a lot when wrong, or cannot be undone?","Who must stay in the work at those steps?","Who needs to look at this before it is tried?"],conds:["data"],ask:"Who needs to review this before we try it, and what are we not allowed to do?",settle:"Where a person must stay in the work, and the rule for stopping.",when:"Explore, and again before implementing."},
+ ado:{n:"Adoptable",q:"Will people actually use it and trust it?",think:["How does each person's day change?","What might they fear, and is that fear reasonable?","Do they have time and permission to try it and say what they think?"],conds:["skills","exp","adapt"],ask:"Can the team have time to try it, and say honestly what they think?",settle:"Who tries it first, and how they will tell us what they found.",when:"Experiment. Ask the people who tried it."}
+};
+const LK=["des","fea","via","res","ado"];
+const INFO={
+ hover:{t:"Info markers",d:"Each one gives a plain definition and an example from A&F work.",e:"Try the markers beside the dials."},
+ gain:{t:"The gain",d:"What you mainly hope to get. It changes how you would measure success, and hours saved only captures one of the four.",e:"A better variance commentary may take just as long to produce and still be worth it."},
+ layers:{t:"The work, in layers",d:"One piece of work laid out as steps. The top layer shows who benefits from each change. Then the steps as they are today and as redesigned, what each step draws on, and the unit conditions the idea rests on. Select a step to rename it, describe it, or change who does it.",e:"In expense review, handing the policy check to AI benefits the team; faster payment benefits the traveler."},
+ benefit:{t:"Who benefits",d:"For each step you change, who gains: you, your team, or the people the work reaches. A redesign that only benefits the people doing it is still worth doing, but it is a different conversation from one that improves service.",e:"Drafting your own meeting notes benefits you. A faster answer to a policy question benefits the person who asked."},
+ lenses:{t:"Five lenses",d:"Five questions decide whether an idea is worth pursuing: is it desirable, feasible, viable, responsible, and adoptable. Pick one and the workflow shows which steps and unit conditions that question depends on. They are questions to settle with your leader, not scores.",e:"Through the responsible lens, expense review lights up 'Approve' and 'Pay': one is costly when wrong, the other cannot be undone."},
+ leans:{t:"Keep, share, hand to AI",d:"Three ways a step can be divided. Keep: a person does it and answers for it. Share: AI prepares and a person finishes or checks. Hand to AI: AI carries it out and a person sees only what falls outside the limits. Decide step by step, never for the whole job at once. An orange dot marks a step that uses sensitive data, is costly when wrong, or cannot be undone.",e:"In expense review: hand the policy check to AI, share the exceptions, keep the approval."},
+ conds:{t:"Unit conditions",d:"An idea is one implementation. It rests on the unit's wider capability to adopt AI: a leader's backing, someone to ask, a register of what has been tried, a map of the work, the skill to judge output, clear data rules, and agreed measures. You do not have to judge these alone; they are things to raise with your leader.",e:"A sound idea for policy questions still stalls if nobody knows which data is permitted."},
+ trade:{t:"The trade-off",d:"Handing over more work saves more time, but exposure to mistakes grows faster the further you go. The markers show where your redesign sits. Change a step and they move. If you hand over a step that needs care, exposure jumps above the curve.",e:"Letting AI draft a board report saves most of the time. Sending it unread saves little more and risks a lot."},
+ pattern:{t:"Design pattern",d:"The overall shape your step-by-step choices add up to.",e:"For variance commentary: AI prepares the explanation, an analyst approves it."},
+ role:{t:"Human role",d:"Saying a person is in the loop is not a design. Decide which person, with what knowledge and authority, doing what. Every design also changes which skills people use, and unused skills fade.",e:"An approver who cannot change the draft is not really approving."},
+ build:{t:"Build size",d:"How much to build. Start with the smallest thing that tests the idea. 'Could grow into' shows where the situation points once the small version has proved its value. The marks show the effort to make it, run it, and check it.",e:"Try a saved prompt on five real expense reports before asking anyone to build a workflow."},
+ caution:{t:"Watch-out",d:"The usual way this kind of redesign goes wrong.",e:"Speeding up the checking when the real wait is the approval queue."},
+ io:{t:"From input to output",d:"Five stations every AI-assisted piece of work passes through. Good practice at each one depends on your situation, so the advice changes with your workflow.",e:"Repeating work with no sensitive data calls for fixed rules and sampling. Sensitive data and costly steps call for the opposite."},
+ io0:{t:"Inputs",d:"Structured data, such as tables and fields, suits rules and calculation. Unstructured content, such as documents and emails, is where AI adds most. AI-ready means in one place, current, labeled, and permitted for use.",e:"A policy library with dated, titled documents is AI-ready. A shared drive of untitled drafts is not."},
+ io1:{t:"The AI step",d:"AI output varies from run to run. Where the answer must be the same every time, a fixed rule or formula is cheaper and can be checked. Use AI where language or judgment is needed.",e:"Calculate the per-diem with a formula. Use AI to read the receipt and explain the exception."},
+ io2:{t:"Checks",d:"Guardrails sized to the stakes: limits on what it may do, review before output counts, sampling afterward, and a rule for when to stop.",e:"Low stakes: sample ten a week. High stakes: a person approves every one."},
+ io3:{t:"Output",d:"Agree what a good output looks like before the first run. Without a standard, nobody can say whether it worked.",e:"A good variance note names the driver, the amount, and whether it will recur."},
+ io4:{t:"Where it goes",d:"Reading from a system is low risk. Writing to one is not. Let AI read first, add writing back later, and have a person confirm anything that cannot be undone.",e:"Let it read the finance system to draft the order. A person presses the button that creates it."},
+ paths:{t:"How the next step is chosen",d:"The lens that most needs attention sets the next step, in this order: responsible, desirable, adoptable, feasible, viable. If none needs attention, the first one still open is used. If all five look settled, the step is a small trial on real work.",e:"If people are resisting, the next step is a conversation with them, whatever else looks ready."},
+ life:{t:"The stages of an idea",d:"An idea moves through exploring, experimenting, implementing, and operating. The five questions are never answered once and for all: a privacy limit can change what is feasible, and a trial can show nobody wanted the new way of working.",e:"An idea that looked viable on paper may cost far more to check than expected once it is running."},
+ measure:{t:"Measuring",d:"You get what you measure. Count usage and you get usage. Decide what better means before you start, and measure today's level so there is something to compare with.",e:"'Forty people used it' says nothing about whether anyone was paid sooner."},
+ mladder:{t:"The measure ladder",d:"Four rungs. Use: did people try it. Output: what it produced. Outcome: what got better in the work. Impact: what that means for the unit. Aim for outcome; use and output alone are activity, not value.",e:"Prompts sent is use. Reports checked is output. Days to payment is outcome."},
+ mthree:{t:"Three numbers",d:"One number for the result you want, one for the quality of the output, and one guardrail: the thing that must not get worse while the first two improve. The result number follows the gain you chose.",e:"Faster payment (result), fewer false flags (quality), no rise in policy breaches (guardrail)."},
+ mtrial:{t:"The trial",d:"A small, time-boxed test on real work, with a decision at the end. Include a messy example, because tidy ones flatter every tool.",e:"Five real expense reports, one with a missing receipt, compared against what a reviewer would do."}
+};
+const CARDS=[
+ {t:"Kinds of work",s:"Not all work is a queue of requests.",b:"<i>Flows to others:</i> processing requests, answering questions, coordinating people, monitoring and checking.<br><i>Done by you or your team:</i> producing documents, analyzing information, deciding and planning, learning something new.<br>AI helps with all eight, in different ways."},
+ {t:"Keep, share, or hand off",s:"How each step can be divided.",b:"<i>Keep:</i> a person does it and answers for it. Purpose, reading people, ambiguity, ethics, negotiation.<br><i>Share:</i> AI prepares, a person finishes or checks. Analysis, drafts, recommendations.<br><i>Hand to AI:</i> AI does it, a person sees exceptions. Volume, calculation, search, monitoring."},
+ {t:"The five lenses",s:"The questions that decide an idea.",b:"<i>Desirable:</i> does it solve a problem that matters?<br><i>Feasible:</i> can we build and run it reliably?<br><i>Viable:</i> is the value worth the ongoing cost?<br><i>Responsible:</i> can we do it safely, legally and fairly?<br><i>Adoptable:</i> will people use it and trust it?<br>Wanting the outcome is not the same as being able to absorb the change."},
+ {t:"Idea and unit",s:"Implementation is not adoption.",b:"An <i>implementation</i> is one idea put to work in one piece of work. <i>Adoption</i> is the unit's wider capability: skills, rules, support, a way to experiment. Good ideas stall on weak ground, so raise the conditions with your leader along with the idea."},
+ {t:"Three human roles",s:"What 'a person in the loop' can mean.",b:"<i>Exception handler:</i> sets the limits and takes what falls outside them.<br><i>Approver:</i> reviews each output before it counts.<br><i>Driver:</i> frames the question and decides, with AI informing."},
+ {t:"Workflow, agent, or app",s:"Which size of build fits.",b:"<i>Saved prompt or assistant:</i> one person, one task.<br><i>Workflow:</i> fixed steps in a fixed order, for work that repeats.<br><i>Agent:</i> works toward a goal and chooses its own steps, behind the scenes across systems.<br><i>Custom app:</i> a front door that many people use.<br>Each step up costs more to make, run, and check. Earn it with a smaller version first."},
+ {t:"Stages of a task",s:"Where AI can go far, and where it should not.",b:"<i>Gather</i> the information. <i>Analyze</i> it. <i>Draft.</i> <i>Decide.</i> <i>Act.</i><br>AI can do a great deal of the first three while a person keeps the last two."},
+ {t:"AI-ready data",s:"What the inputs need before you start.",b:"In one place. Current. Labeled so a newcomer could tell what it is. Permitted for use in the tool.<br><i>Structured</i> data suits rules. <i>Unstructured</i> content is where AI adds most."},
+ {t:"Guardrails by stakes",s:"How much checking is enough.",b:"<i>Low:</i> limits on what it may do, and a weekly sample.<br><i>Medium:</i> a person approves before it counts.<br><i>High:</i> two reviewers on anything that cannot be undone, and a written stop rule."},
+ {t:"Five ways it goes wrong",s:"Patterns worth recognizing early.",b:"A faster step, the same wait. Skills fading from disuse. Unreviewed output at scale. A tool looking for a problem. Losing the human touch where it mattered."}
+];
+const TOUR=[
+ ["ideas","Ten ideas sit behind this page. Open any card that is new to you, or come back to them later."],
+ ["ex","Pick the piece of work closest to yours. They are grouped by kind of work, because not everything is a queue of requests. 'My own idea' starts blank."],
+ ["rail","Seven dials describe the work. Each stop has its own label. The hours a month they add up to are shown at the top."],
+ ["flow","The work in layers: who benefits, today, redesigned, what it draws on, and the unit conditions. Pick a lens to see what each question depends on."],
+ ["step","Select any step to rename it, say what is true of it, and choose keep, share, or hand to AI. You can add and remove steps."],
+ ["trade","The trade-off moves with your choices. Hand over a step that needs care and exposure jumps above the curve."],
+ ["lensp","Each lens has a status, a reason, and questions to think about. None of them is a score."],
+ ["result","What your step-by-step choices add up to: a pattern, the human role, how much to build, and what to watch for."],
+ ["io","Good practice at each station from input to output, for this workflow."],
+ ["sheet","The conversation sheet: what you bring, what to ask your leader, what to settle together, and when. Copy it as an agenda."],
+ ["measure","And how you would tell it worked: which rung to measure, three numbers, and a short trial with a decision at the end."]
+];
+
+/* ================= Logic (pure) ================= */
+const OCC=[.3,1,4,20,100],HRS=[.2,1,4,20,80];
+const hoursOf=d=>OCC[d.freq-1]*HRS[d.time-1];
+const flagged=s=>!!(s.f.s||s.f.c||s.f.u),LV={keep:0,share:.5,hand:1};
+function suggest(s,d,u){const f=s.f;
+  if(s.t==="gather")return f.s?["share","It uses sensitive data, so a person checks what is gathered."]:d.judge>=4?["share","Knowing what is relevant is itself a judgment here, so a person guides the gathering."]:["hand","Gathering is searching and collecting, which AI does well."];
+  if(s.t==="analyze")return d.differ>=4?["share",`Each ${u} differs, so AI prepares the analysis and a person completes it.`]:f.c?["share","A mistake here is costly, so a person checks the analysis."]:d.judge>=4?["share","This is mostly judgment, so AI offers a view and a person forms their own."]:d.good>=4?["share","Good and bad are hard to tell apart here, so a person who knows the work checks it."]:["hand",`Each ${u} is much like the last, so the analysis follows a pattern AI can run.`];
+  if(s.t==="draft")return d.reach===1&&d.good<=2&&!f.c?["hand","It is for your own use and quick to check, so AI can write it."]:["share","AI writes a first draft. A person shapes it and puts their name to it."];
+  if(s.t==="decide")return f.c||f.u||d.differ>=4||d.judge>=4?["keep","Deciding stays with a person when it is costly, permanent, new each time, or mostly judgment. Someone has to answer for it."]:["share","A routine decision: AI recommends, a person confirms."];
+  if(f.u)return["keep","This cannot be undone, so a person presses the button."];
+  if(f.v&&f.c)return["keep","People outside the team see this step and a mistake is costly, so a person does it."];
+  if(f.v)return["share","People outside the team see this step, so a person stays reachable in it."];
+  return["hand","A routine action that can be undone, which AI can carry out."]}
+function read(d,steps,bn,gain,u){
+  u=u||"time";const n=steps.length,sug=steps.map(s=>suggest(s,d,u)),lean=steps.map((s,i)=>s.ch||sug[i][0]);bn=Math.min(bn,n-1);
+  const a=lean.reduce((t,l)=>t+LV[l],0)/n,as=sug.reduce((t,x)=>t+LV[x[0]],0)/n;
+  const nFlag=steps.filter(flagged).length,risky=steps.map((s,i)=>flagged(s)&&lean[i]==="hand"),nR=risky.filter(Boolean).length;
+  const over=steps.map((s,i)=>flagged(s)&&LV[lean[i]]>LV[sug[i][0]]);
+  const key=a===0?"leave":d.differ>=4&&nFlag===0?"probe":a>=.6?"automate":a>=.35?"approve":"lead";
+  const sys=[...new Set(steps.filter(s=>s.f.y).map(s=>s.f.y))],vis=steps.filter(s=>s.f.v).length;
+  let build=({automate:d.freq>=3?2:1,approve:1,lead:0,probe:0,leave:-1})[key],grow=-1,bnote;
+  if(build>1&&d.reach===1)build=1;
+  if(build===-1)bnote="Nothing. Every step stays with a person.";
+  else{bnote=["Write the instructions once and reuse them. No one has to build anything.","An assistant set up with your instructions and reference documents.","A fixed sequence of steps, each checked, for work that repeats often."][build];
+    if((key==="automate"||key==="approve")&&d.freq>=3&&d.reach>=3&&sys.length>=2){grow=d.reach>=4&&vis>=2?4:3;
+      bnote+=grow===4?" Many people would use this directly across several systems, so it could grow into an app once the smaller version proves its value.":" It coordinates work across several systems behind the scenes, so it could grow into an agent once the smaller version proves its value."}}
+  const P=PATTERNS[key];let caution=P.caution,ctext=P.ct;
+  if(a>0&&lean[bn]==="keep"){caution="A faster step, the same wait";ctext=`The work waits at "${steps[bn].n}", and that step stays with a person. Speeding up the other steps will not shorten the wait. Look at why that step is slow.`}
+  else if(nR){caution="Unreviewed output where it matters";ctext=`"${steps[risky.indexOf(true)].n}" needs care and has been handed to AI with no person checking. Share it or keep it.`}
+  else if(steps.some((s,i)=>s.f.v&&lean[i]==="hand")){caution="Losing the human touch";ctext="People outside the team will meet AI where they used to meet a person. Keep an easy way to reach someone."}
+  else if(d.good>=4&&a>=.35){caution="Errors nobody can see";ctext="Good and bad work are hard to tell apart here. A fluent wrong answer will look right. An expert has to check."}
+  const hours=hoursOf(d),value=.65*Math.min(1,Math.log10(hours+1)/2.3)+.35*((d.reach-1)/4);
+  const eff=i=>{const t=EFFORT[i].reduce((x,y)=>x+y,0);return t<=4?0:t<=6?1:2},bandV=value<.34?0:value<.67?1:2;
+  const L={},hw=hours<1?"under an hour":`about ${hours>=10?Math.round(hours/5)*5:Math.round(hours)} hours`;
+  const timeGain=gain==="time"||gain==="speed",bnKept=lean[bn]==="keep"&&a>0;
+  L.des=!timeGain?{s:"open",why:`You want ${gain==="quality"?"better quality":"something that was not possible before"}, which hours do not capture. Agree with your leader how you would recognize it.`}:hours<4?{s:"warn",why:`This takes ${hw} a month for each person who does it. That may be too little to be worth changing.`}:bnKept?{s:"open",why:`It takes ${hw} a month, but the redesign does not touch "${steps[bn].n}", where the work waits.`}:hours<20?{s:"open",why:`It takes ${hw} a month for each person who does it. Your leader can say whether that matters to the unit.`}:{s:"good",why:`It takes ${hw} a month for each person who does it, and the redesign reaches the step where the work waits.`};
+  L.des.bite=[bn];
+  const sysTouched=steps.some((s,i)=>s.f.y&&lean[i]!=="keep");
+  L.fea={s:(d.differ>=4||d.good>=4)&&a>=.6?"warn":d.good>=4&&a>0?"open":sysTouched||steps.some((s,i)=>s.f.s&&lean[i]!=="keep")?"open":"good",
+   why:d.differ>=4&&a>=.6?`Each ${u} differs a great deal, yet most of the work is handed over. AI will be unreliable here.`:d.good>=4&&a>0?"Good and bad work are hard to tell apart here, so checking AI's output takes real expertise.":sysTouched?`AI would need to work with ${sys.join(" and ")}. Someone has to confirm that is possible and allowed.`:"Nothing here depends on another system or on sensitive data.",bite:steps.map((s,i)=>s.f.y||s.f.s?i:-1).filter(i=>i>=0)};
+  const diff=build<0?0:bandV-eff(build);
+  L.via={s:build<0?"open":diff>=1?"good":diff===0?"open":"warn",why:build<0?"Nothing is being built, so there is nothing to weigh yet.":diff>=1?`The benefit looks larger than the effort to make, run and check ${BUILDS[build].toLowerCase()}.`:diff===0?`The benefit and the effort for ${BUILDS[build].toLowerCase()} look about even. It depends on the result holding up.`:`The effort for ${BUILDS[build].toLowerCase()} looks larger than the benefit. Shrink the build or find a bigger benefit.`,bite:lean.map((l,i)=>l!=="keep"?i:-1).filter(i=>i>=0)};
+  const resIdx=steps.map((s,i)=>flagged(s)?i:-1).filter(i=>i>=0);
+  L.res={s:nR?"warn":resIdx.some(i=>lean[i]==="share")||steps.some(s=>s.f.s)?"open":"good",why:nR?`${nR} step${nR>1?"s that need":" that needs"} care ${nR>1?"are":"is"} handed to AI with no person checking.`:!resIdx.length?"No step is marked sensitive, costly, or permanent.":resIdx.some(i=>lean[i]==="share")||steps.some(s=>s.f.s)?"Steps that need care are shared or involve sensitive data. Someone should confirm that is acceptable.":"Every step that needs care stays with a person.",bite:resIdx};
+  const visHand=steps.some((s,i)=>s.f.v&&lean[i]==="hand"),changed=lean.filter(l=>l!=="keep").length;
+  L.ado={s:d.want<=2?"warn":d.want===3||visHand?"open":"good",why:d.want<=2?"The people who do this work are not on board. No design survives that.":visHand?"People outside the team would meet AI directly. Their trust has to be earned, too.":d.want===3?"The people who do this work have not said either way. Ask them.":`The people who do this work want it, and ${changed} of ${n} steps would change for them.`,bite:steps.map((s,i)=>s.f.v||lean[i]!=="keep"?i:-1).filter(i=>i>=0)};
+  const NEXT={res:{warn:["Put a person back on the steps that need care before anything else.","Whoever is accountable for this work"],open:["Ask who needs to review the use of this data and these steps before a trial.","Your unit leader, then the data owner"]},
+   des:{warn:["Check the benefit is real. Ask two people who do this work what it costs them today.","The people who do the work"],open:["Confirm with your leader that this matters to the unit, and how you would both recognize the gain.","Your unit leader"]},
+   ado:{warn:["Talk to the people who do this work before designing anything further.","The people who do the work"],open:["Show the redesign to one colleague who does this work and ask what worries them.","A colleague who does this work"]},
+   fea:{warn:["Pull back to sharing, or narrow the idea to the parts that repeat and are easy to check.","A colleague who knows this work deeply"],open:["Find out who can judge the output, and whether the sources involved can be read from.","A colleague who knows this work deeply, then IT"]},
+   via:{warn:["Shrink the build or find a bigger benefit before investing more.","Your unit leader"],open:["Write down the number that would show it worked, and what it is today.","Your unit leader"]}};
+  let next=["Try it on five real examples, including a messy one, and compare the result with what a person would do.","The enablement team, to register it as an experiment"],nl="";
+  for(const st of["warn","open"]){const k=["res","des","ado","fea","via"].find(k=>L[k].s===st);if(k){next=NEXT[k][st];nl=k;break}}
+  return{sug,lean,a,as,key,build,grow,bnote,caution,ctext,value,bandV,effB:build<0?-1:eff(build),L,next:next[0],who:next[1],nl,sys,nFlag,over,risky,changed,vis,hours,hw,bn,expoBase:Math.min(1,(nFlag/n)*.6+((d.differ-1)/4)*.2+((d.good-1)/4)*.2)};
+}
+function sensitivity(d,steps,bn,gain,u){const base=read(d,steps,bn,gain,u).key;
+  for(const x of DIALS)for(const dv of[-1,1]){const v=d[x.id]+dv;if(v<1||v>5)continue;const k=read(Object.assign({},d,{[x.id]:v}),steps,bn,gain,u).key;if(k!==base)return{text:`change "${x.q.replace("{u}",u)}" to "${x.stops[v-1].toLowerCase()}"`,key:k}}
+  for(let i=0;i<steps.length;i++)for(const c of["keep","share","hand"]){const st=steps.map((s,j)=>j===i?Object.assign({},s,{ch:c}):s);const k=read(d,st,bn,gain,u).key;if(k!==base)return{text:`set "${steps[i].n}" to ${c==="hand"?"hand to AI":c}`,key:k}}
+  return null}
+
+/* ================= State ================= */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clone=o=>JSON.parse(JSON.stringify(o));
+const exOf=id=>EXAMPLES.find(e=>e.id===id)||EXAMPLES[0];
+function load(id){const e=exOf(id);return{ex:e.id,kind:e.kind,name:e.id==="own"?"":e.name,d:Object.assign({},e.d),gain:e.gain,steps:clone(e.steps),bn:e.bn,lens:"all",step:e.bn}}
+let S=load("expense");
+try{const s=JSON.parse(localStorage.getItem("affg4")||"null");if(s&&s.d&&Array.isArray(s.steps)&&s.steps.length>=3&&s.steps.length<=7&&EXAMPLES.some(e=>e.id===s.ex)&&s.steps.every(p=>p&&p.f&&typeof p.n==="string")){S=Object.assign(S,s);DIALS.forEach(x=>{const v=+S.d[x.id];S.d[x.id]=v>=1&&v<=5?Math.round(v):3});if(!LENSES[S.lens])S.lens="all";if(!GAINS.some(g=>g[0]===S.gain))S.gain="time";S.bn=Math.min(Math.max(0,S.bn|0),S.steps.length-1);S.step=Math.min(Math.max(0,S.step|0),S.steps.length-1)}}catch(e){}
+const save=()=>{try{localStorage.setItem("affg4",JSON.stringify(S))}catch(e){}};
+const ex=()=>exOf(S.ex),unit=()=>kindOf(S.kind).u,ideaName=()=>S.name.trim()||(S.ex==="own"?"My idea":ex().name);
+let R=null;
+
+/* ================= Workflow ================= */
+function wrap(t,n){const w=String(t).split(" "),L=[""];w.forEach(x=>{if((L[L.length-1]+" "+x).trim().length>n&&L[L.length-1])L.push(x);else L[L.length-1]=(L[L.length-1]+" "+x).trim()});return L.slice(0,3)}
+const LN={hand:"hand to AI",keep:"keep",share:"share"};
+function drawA(r){
+  const st=S.steps,n=st.length,x0=92,avail=648,gp=n>5?8:12,sw=(avail-(n-1)*gp)/n,W=x0+avail+12,lens=S.lens,bite=lens==="all"?null:r.L[lens].bite,cset=LENSES[lens].conds,ch=Math.max(8,Math.floor(sw/6.4));
+  const who=(p,i)=>r.lean[i]==="keep"?"":p.f.v?(S.d.reach>=4?"People you serve":"People it reaches"):S.d.reach===1?"You":"Your team";
+  let s=`<svg viewBox="0 0 ${W} 392" role="img" aria-label="The workflow: who benefits, today, redesigned, what it draws on, and unit conditions">`;
+  [[8,40,"WHO","BENEFITS"],[54,60,"TODAY",""],[120,116,"REDESIGNED",""],[242,40,"DRAWS ON",""],[288,84,"UNIT","CONDITIONS"]].forEach(([y,h,a,b])=>{s+=`<rect class="lane" x="0" y="${y}" width="${W}" height="${h}" rx="10"/><text class="lanelab" x="10" y="${y+(b?18:h/2+4)}">${a}</text>${b?`<text class="lanelab" x="10" y="${y+31}">${b}</text>`:""}`});
+  st.forEach((p,i)=>{const x=x0+i*(sw+gp),l=r.lean[i],off=bite&&!bite.includes(i),cx=x+sw/2,w=who(p,i);
+    if(w)s+=`<rect class="pill" x="${x+4}" y="17" width="${sw-8}" height="22" rx="11"/><text class="sm" x="${cx}" y="32" text-anchor="middle" font-size="10.5" font-weight="600">${w.length>ch+2?w.replace("People ",""):w}</text>`;
+    s+=`<g class="sg${i===S.step?" sel":""}${off?" off":""}" data-step="${i}" tabindex="0" role="button" aria-label="Today: ${esc(p.tn||p.n)}. Select to edit."><rect class="stp td" x="${x}" y="62" width="${sw}" height="44" rx="6"/>${wrap(p.tn||p.n,ch+2).slice(0,2).map((t,j)=>`<text class="smm" x="${x+9}" y="${80+j*12}" font-size="10.5">${esc(t)}</text>`).join("")}</g><line class="s-mu" stroke-dasharray="2 3" x1="${cx}" y1="106" x2="${cx}" y2="134"/>`;
+    if(i)s+=`<line class="s-mu" x1="${x-gp}" y1="170" x2="${x}" y2="170"/>`;
+    s+=`<g class="sg${i===S.step?" sel":""}${off?" off":""}" data-step="${i}" tabindex="0" role="button" aria-label="${esc(p.n)}: ${LN[l]}. Select to change."><rect class="stp" x="${x}" y="134" width="${sw}" height="72" rx="6"/><rect class="f-${l}" x="${x}" y="134" width="5" height="72"/><text class="tag" x="${x+13}" y="150">${p.t.toUpperCase()}</text>${wrap(p.n,ch).map((t,j)=>`<text class="nm" x="${x+13}" y="${166+j*12}" font-size="11">${esc(t)}</text>`).join("")}${flagged(p)?`<circle class="f-bl" cx="${x+sw-11}" cy="145" r="4.5"><title>Needs care</title></circle>`:""}<text class="lean f-${l}" x="${cx}" y="223" text-anchor="middle" font-size="10.5">${LN[l]}${p.ch&&p.ch!==r.sug[i][0]?"*":""}</text></g>`;
+    if(i===r.bn)s+=`<text class="lean f-bl" x="${cx}" y="130" text-anchor="middle" font-size="9">${sw>100?"WORK WAITS HERE":"WAITS HERE"}</text>`;
+    if(p.f.y)s+=`<rect class="pill" x="${x+4}" y="251" width="${sw-8}" height="22" rx="11"/><text class="sm" x="${cx}" y="266" text-anchor="middle" font-size="10.5">${esc(p.f.y.length>ch+2?p.f.y.slice(0,ch+1)+"…":p.f.y)}</text>`});
+  const cw=(avail-6*6)/7;
+  CONDS.forEach(([k,nm],j)=>{const x=x0+j*(cw+6),on=cset.includes(k);s+=`<g class="${lens!=="all"&&!on?"cond off":""}"><rect class="cond${on?" on":""}" x="${x.toFixed(1)}" y="306" width="${cw.toFixed(1)}" height="48" rx="6"/><text class="sm" x="${(x+cw/2).toFixed(1)}" y="334" text-anchor="middle" font-size="10.5" font-weight="600">${nm}</text></g>`});
+  if(st.some((p,i)=>p.ch&&p.ch!==r.sug[i][0]))s+=`<text class="smm" x="${W-10}" y="386" text-anchor="end">* your choice, different from the suggestion</text>`;
+  $("svgA").innerHTML=s+"</svg>";
+  $("svgA").querySelectorAll("[data-step]").forEach(el=>{const f=()=>{S.step=+el.dataset.step;drawA(R);drawInsp(R);save()};el.addEventListener("click",f);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();f()}})});
+}
+function drawInsp(r){const i=Math.min(S.step,S.steps.length-1),p=S.steps[i],exNameBefore=S.steps[i].tn||S.steps[i].n,cur=r.lean[i],sg=r.sug[i],n=S.steps.length;
+  $("insp").innerHTML=`<h3><span class="eyebrow">Step ${i+1} of ${n}</span></h3>
+   <div class="block" style="gap:8px"><label class="note" for="st-today">How it is done today</label><input class="inp" id="st-today" maxlength="50" value="${esc(p.tn||p.n)}"><label class="note" for="st-name">In the redesign</label><div class="row" style="flex-wrap:nowrap"><input class="inp" id="st-name" maxlength="50" value="${esc(p.n)}"><select class="inp" id="st-type" aria-label="Kind of step">${TYPES.map(([k,l])=>`<option value="${k}"${p.t===k?" selected":""}>${l}</option>`).join("")}</select></div>
+    <span class="eyebrow">What is true of this step</span><div class="facts">${FACTS.map(([k,l])=>`<label><input type="checkbox" id="f-${k}" data-f="${k}"${p.f[k]?" checked":""}>${l}</label>`).join("")}${p.f.y?`<input class="inp" id="st-sys" maxlength="30" aria-label="Name of the system or source" value="${esc(p.f.y)}">`:""}<label><input type="checkbox" id="f-bn" data-bn="1"${r.bn===i?" checked":""}>This is where the work waits</label></div></div>
+   <div class="block" style="gap:8px"><span class="eyebrow">In the redesign, who does it</span><div class="seg" role="group" aria-label="Who does this step">${["keep","share","hand"].map(c=>`<button data-c="${c}" aria-pressed="${cur===c}">${c==="hand"?"Hand to AI":c[0].toUpperCase()+c.slice(1)}${sg[0]===c?"<small>SUGGESTED</small>":""}</button>`).join("")}</div>
+   <p style="font-size:13.5px"><b>Suggested: ${LN[sg[0]]}.</b> ${esc(sg[1])}${cur!==sg[0]?` <b>You chose ${LN[cur]}.</b>${r.over[i]?" This step needs care, so that raises exposure.":""}`:""}</p>
+   <div class="row"><button class="btn ghost sm" id="st-add"${n>=7?" disabled":""}>Add a step after this</button><button class="btn ghost sm" id="st-del"${n<=3?" disabled":""}>Remove this step</button>${S.steps.some(x=>x.ch)?`<button class="btn ghost sm" id="reset-choices">Use every suggestion</button>`:""}</div></div>`;
+  $("st-name").addEventListener("input",e=>{if(!p.tn)p.tn=exNameBefore;p.n=e.target.value;drawA(R);save()});
+  $("st-today").addEventListener("input",e=>{p.tn=e.target.value;drawA(R);save()});$("st-name").addEventListener("change",()=>update());
+  $("st-type").addEventListener("change",e=>{p.t=e.target.value;update()});
+  const sy=$("st-sys");if(sy){sy.addEventListener("input",e=>{p.f.y=e.target.value||"A source";drawA(R);save()});sy.addEventListener("change",()=>update())}
+  $("insp").querySelectorAll("[data-f]").forEach(el=>el.addEventListener("change",()=>{const k=el.dataset.f;p.f[k]=k==="y"?(el.checked?"A system or source":""):(el.checked?1:0);update()}));
+  $("insp").querySelector("[data-bn]").addEventListener("change",e=>{if(e.target.checked)S.bn=i;update()});
+  $("insp").querySelectorAll("[data-c]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.c===sg[0])delete p.ch;else p.ch=b.dataset.c;update()}));
+  $("st-add").addEventListener("click",()=>{if(S.steps.length>=7)return;S.steps.splice(i+1,0,Object.assign(S_("New step","analyze"),{tn:"Not done today"}));if(S.bn>i)S.bn++;S.step=i+1;update();const nm=$("st-name");if(nm){nm.focus();nm.select()}});
+  $("st-del").addEventListener("click",()=>{if(S.steps.length<=3)return;S.steps.splice(i,1);if(S.bn>i||S.bn>=S.steps.length)S.bn=Math.max(0,S.bn-1);S.step=Math.min(i,S.steps.length-1);update()});
+  const rc=$("reset-choices");if(rc)rc.addEventListener("click",()=>{S.steps.forEach(x=>delete x.ch);update()});
+}
+function drawT(r){
+  const x0=40,x1=420,y0=176,H=150,V=.25+.75*r.value,K=.15+.85*r.expoBase;
+  const X=a=>x0+(x1-x0)*a,gain=a=>V*Math.pow(a,.6),expo=a=>Math.min(1.05,K*a*a*1.3),Y=v=>y0-H*Math.min(1.08,v),pts=f=>Array.from({length:33},(_,i)=>`${X(i/32).toFixed(1)},${Y(f(i/32)).toFixed(1)}`).join(" ");
+  const nOver=r.over.filter(Boolean).length,act=Math.min(1.05,expo(r.a)+.14*nOver);
+  let s=`<svg viewBox="0 0 440 214" role="img" aria-label="Time saved and exposure for your redesign"><line class="s-mu" x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}"/>`;
+  s+=`<rect x="${X(r.as)-13}" y="20" width="26" height="${y0-20}" rx="6" fill="var(--violet-soft)"/><text class="sm" x="${Math.min(x1-28,Math.max(x0+28,X(r.as)))}" y="14" text-anchor="middle" font-weight="700" style="fill:var(--violet)">SUGGESTED</text>`;
+  s+=`<polyline class="s-en" stroke-width="2.5" points="${pts(gain)}"/><polyline class="s-bl" stroke-width="2.5" points="${pts(expo)}"/>`;
+  s+=`<text class="sm f-en" font-weight="700" x="${x1}" y="${(Y(gain(1))-7).toFixed(1)}" text-anchor="end">time saved</text><text class="sm f-bl" font-weight="700" x="${x1}" y="${Math.max(30,Y(expo(1))+14).toFixed(1)}" text-anchor="end">exposure to mistakes</text>`;
+  s+=`<line class="s-mu" stroke-dasharray="3 3" x1="${X(r.a)}" y1="22" x2="${X(r.a)}" y2="${y0}"/>${nOver?`<line class="s-bl" stroke-width="2" x1="${X(r.a)}" y1="${Y(expo(r.a)).toFixed(1)}" x2="${X(r.a)}" y2="${Y(act).toFixed(1)}"/>`:""}<circle class="f-en" cx="${X(r.a)}" cy="${Y(gain(r.a)).toFixed(1)}" r="6" stroke="var(--surface)" stroke-width="2"/><circle class="f-bl" cx="${X(r.a)}" cy="${Y(act).toFixed(1)}" r="6" stroke="var(--surface)" stroke-width="2"/>`;
+  s+=`<text class="smm" x="${x0}" y="${y0+15}">people do it all</text><text class="smm" x="${x1}" y="${y0+15}" text-anchor="end">AI does it all</text><text class="sm" font-weight="700" x="${Math.min(x1-30,Math.max(x0+30,X(r.a)))}" y="${y0+30}" text-anchor="middle">your redesign</text>`;
+  $("svgT").innerHTML=s+"</svg>";
+  const names=S.steps.filter((p,i)=>r.over[i]).map(p=>`"${p.n}"`);
+  $("capT").textContent=nOver?`You handed over more than suggested at ${names.join(" and ")}, which need${nOver>1?"":"s"} care. Exposure now sits above the curve.`:Math.abs(r.a-r.as)<.01?"Your redesign matches the suggestion, where the gap between time saved and exposure is widest. Change a step above and the markers move.":r.a>r.as?"You are handing over more than suggested. More time saved, and exposure rising faster.":"More cautious than suggested. Less time saved, less exposure. A fair choice while trust is being built.";
+}
+const ST={good:["✓","Looks settled"],open:["?","Still open"],warn:["!","Needs attention"]};
+const stat=s=>`<span class="status ${s}"><b>${ST[s][0]}</b>${ST[s][1]}</span>`;
+function drawLensP(r){const k=S.lens;
+  if(k==="all"){$("lensp").innerHTML=`<h3>The five lenses <button class="i" data-i="lenses" aria-label="About the five lenses">i</button></h3><p>Five questions decide whether an idea is worth pursuing. Select one for the reasoning and to see where it shows up in the workflow.</p><div class="block" style="gap:6px">${LK.map(x=>`<div class="row" style="justify-content:space-between"><button class="chip sm" data-pick="${x}">${LENSES[x].n}</button>${stat(r.L[x].s)}</div>`).join("")}</div><p class="note">These are readings of what you entered, not judgments. Your leader will know things that change them.</p>`;
+    $("lensp").querySelectorAll("[data-pick]").forEach(b=>b.addEventListener("click",()=>{S.lens=b.dataset.pick;drawLens();drawA(R);drawLensP(R);save()}));return}
+  const Lz=LENSES[k],x=r.L[k],names=x.bite.map(i=>S.steps[i].n);
+  $("lensp").innerHTML=`<div class="row" style="justify-content:space-between"><h3>${Lz.n}</h3>${stat(x.s)}</div><p class="big" style="font-size:17px">${esc(Lz.q)}</p><p>${esc(x.why)}</p>${names.length?`<p class="note">In the workflow: ${names.map(esc).join(", ")}.</p>`:""}<span class="eyebrow">Think about</span><ul class="tight">${Lz.think.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`;
+}
+
+/* ================= Reading ================= */
+const pips=a=>["make","run","check"].map((k,i)=>`${k} ${"●".repeat(a[i])}${"○".repeat(3-a[i])}`).join("  ");
+function drawResult(r){const P=PATTERNS[r.key],ib=k=>`<button class="i" data-i="${k}" aria-label="About ${esc(INFO[k].t)}">i</button>`;
+  $("cards").innerHTML=`<div><span class="eyebrow">Design pattern ${ib("pattern")}</span><span class="big">${esc(P.n)}</span><p>${esc(P.t)}</p></div>
+   <div><span class="eyebrow">Human role ${ib("role")}</span><span class="big">${esc(P.role)}</span><p>${esc(P.rt)}</p><dl class="kv"><dt>Builds</dt><dd>${esc(P.grow)}</dd><dt>Could fade</dt><dd>${esc(P.fade)}</dd></dl></div>
+   <div><span class="eyebrow">How much to build ${ib("build")}</span><div class="ladder">${BUILDS.map((b,i)=>`<div class="${i===r.build?"on":i===r.grow?"grow":""}"><span>${esc(b)}</span><small>${i===r.build?"START HERE":i===r.grow?"COULD GROW INTO":""}</small></div>`).join("")}</div><p>${esc(r.bnote)}</p>${r.build>=0?`<span class="note">Effort to ${pips(EFFORT[r.build])}</span>`:""}</div>
+   <div><span class="eyebrow">Watch for ${ib("caution")}</span><span class="big">${esc(r.caution)}</span><p>${esc(r.ctext)}</p></div>`;
+  const sv=sensitivity(S.d,S.steps,S.bn,S.gain,unit());
+  $("firm").innerHTML=sv?`<b>What would change this:</b> ${esc(sv.text)} and it becomes "${esc(PATTERNS[sv.key].n.toLowerCase())}".`:`<b>This reading is firm.</b> No single change to a dial or a step alters it.`;
+}
+function drawIO(r){const d=S.d,m=ex().m,st=S.steps,sens=st.some(s=>s.f.s),undo=st.some(s=>s.f.u);
+  const A=[["Inputs",sens?["Clear the data first","Sensitive data is involved. Find out what may be used, and in which tool, before anything else."]:r.sys.length>=2?["Name the source of record",`Inputs come from ${r.sys.join(" and ")}. Agree which one is the source of truth.`]:["Keep the inputs simple","One source, kept current and labeled, is enough to start."]],
+   ["The AI step",d.differ<=2&&d.judge<=2?["Use fixed rules where you can","Where the answer must be the same every time, a rule or formula is cheaper and can be checked. Use AI for the reading and wording around it."]:d.differ<=3&&d.judge<=3?["Mix rules and AI","Let rules handle the clear parts and AI the parts that need reading."]:["Ask for options, not answers","It differs too much, or rests too much on judgment, for rules. Expect what comes back to vary, and treat it as input to your own thinking."]],
+   ["Checks",d.good>=4?["An expert checks every output","Good and bad are hard to tell apart here, so sampling is not enough."]:r.nFlag===0?["Set limits and sample","Say what it may and may not do. Check a handful every week."]:undo?["Review every permanent step","A person confirms anything that cannot be undone, and there is a written rule for when to stop."]:["Review before it counts","A person approves the steps that need care, in batches small enough to actually read."]],
+   ["Output",["Say what good looks like first",`Agree the standard before the first run. Here, watch: ${m.quality.toLowerCase()}.`]],
+   ["Where it goes",!r.sys.length?["Keep it with you","Carry results across by hand. No connection to other systems is needed yet."]:undo?["A person presses the button","AI may prepare the action. A person confirms anything that cannot be undone."]:["Read before you write","Let it read from its sources first. Add writing back only once the reading has proved reliable."]]];
+  $("io").innerHTML=A.map(([n,[h,t]],i)=>`${i?'<div class="ar" aria-hidden="true">→</div>':""}<div class="st"><span class="eyebrow">${n} <button class="i" data-i="io${i}" aria-label="About ${n}">i</button></span><b>${esc(h)}</b><p>${esc(t)}</p></div>`).join("");
+}
+
+/* ================= Conversation ================= */
+const BAND=["small","moderate","large"],GW={time:"time back",quality:"better quality",speed:"faster turnaround",new:"something we could not do before"};
+function resultMeasure(){const m=ex().m;return({time:`Hours spent on this each month`,quality:m.quality,speed:m.outcome,new:m.impact})[S.gain]}
+function bring(r){const d=S.d,st=S.steps,fl=st.map((p,i)=>flagged(p)?`"${p.n}" (${LN[r.lean[i]]})`:"").filter(Boolean);
+  return{des:`It comes up ${DIALS[0].stops[d.freq-1].toLowerCase()} and takes ${r.hw} a month for each person. What I want from it is ${GW[S.gain]}. The work waits at "${st[r.bn].n}".`,
+   fea:`${r.sys.length?`It draws on: ${r.sys.join(", ")}.`:"It draws on no other system."} ${st.some(p=>p.f.s)?"Sensitive data is used.":"No sensitive data is flagged."} Telling good work from bad: ${DIALS[4].stops[d.good-1].toLowerCase()}.`,
+   via:r.build<0?"Nothing is being built yet.":`Start with ${BUILDS[r.build].toLowerCase()}. The benefit looks ${BAND[r.bandV]} and the effort ${BAND[r.effB]}.`,
+   res:fl.length?`Steps that need care: ${fl.join(", ")}.`:"No step is marked sensitive, costly, or permanent.",
+   ado:`The people who do this work: ${DIALS[6].stops[d.want-1].toLowerCase()}. ${r.changed} of ${st.length} steps would change for them.`}}
+function sheetText(r){const b=bring(r);return`AI idea: ${ideaName()} (${kindOf(S.kind).n.toLowerCase()})\nRedesign: ${PATTERNS[r.key].n}. ${S.steps.map((p,i)=>`${p.n} (${LN[r.lean[i]]})`).join("; ")}.\n\n`+LK.map(k=>`${LENSES[k].n.toUpperCase()}: ${LENSES[k].q} [${ST[r.L[k].s][1]}]\n- What I know: ${b[k]}\n- To ask: ${LENSES[k].ask}\n- To settle together: ${LENSES[k].settle}\n- When: ${LENSES[k].when}`).join("\n\n")+`\n\nMEASURE: ${resultMeasure()}; guardrail: ${ex().m.guard}.\nNEXT STEP: ${r.next} (${r.who})`}
+function drawTalk(r){const b=bring(r),m=ex().m;
+  $("sheet").innerHTML=`<div class="h">Lens</div><div class="h">What you bring</div><div class="h">Ask your leader</div><div class="h">Settle together</div><div class="h">When to settle it</div>`+LK.map(k=>`<div class="l"><b>${LENSES[k].n}</b>${stat(r.L[k].s)}</div><div data-h="What you bring">${esc(b[k])}</div><div data-h="Ask your leader">${esc(LENSES[k].ask)}</div><div data-h="Settle together">${esc(LENSES[k].settle)}</div><div data-h="When to settle it">${esc(LENSES[k].when)}</div>`).join("");
+  $("next").innerHTML=`<span class="eyebrow">One next step <button class="i" data-i="paths" aria-label="About how the next step is chosen">i</button></span><span class="big">${esc(r.next)}</span><p class="note">Who to talk to: ${esc(r.who)}.${r.nl?` This comes from the ${LENSES[r.nl].n.toLowerCase()} lens.`:""}</p>`;
+  $("rungs").innerHTML=[["Use",m.use,"Not enough on its own"],["Output",m.output,""],["Outcome",m.outcome,"Aim here"],["Impact",m.impact,""]].map(([n,t,x],i)=>`<div class="rung${i===2?" aim":""}"><b>${n}${x?` · ${x}`:""}</b><span>${esc(t)}</span></div>`).join("");
+  $("num3").innerHTML=`<div><b>Result: ${GW[S.gain]}</b><span>${esc(resultMeasure())}</span></div><div class="q"><b>Quality</b><span>${esc(S.gain==="quality"?"How often a person had to fix its output":m.quality)}</span></div><div class="g"><b>Guardrail: must not get worse</b><span>${esc(m.guard)}</span></div><p class="note">Write down today's value for each before you start.</p>`;
+  $("tl").innerHTML=`<div><div><b>Baseline</b><span>Measure the three numbers as they are today.</span></div></div><div><div><b>Trial</b><span>${S.d.freq>=4?"Two weeks of real work":"The next five real examples"}, including a messy one. ${r.nFlag?"A person checks every output on the steps that need care.":"Compare a sample with what a person would do."}</span></div></div><div><div><b>Decide</b><span>Keep, change, or stop. Put the date in a calendar now.</span></div></div>`;
+}
+function drawHours(r){$("hours").innerHTML=`<b>${r.hours<1?"Under an hour":r.hw[0].toUpperCase()+r.hw.slice(1)}</b> a month, for each person who does it.`}
+function update(){R=read(S.d,S.steps,S.bn,S.gain,unit());S.bn=R.bn;drawHours(R);drawA(R);drawInsp(R);drawT(R);drawLensP(R);drawResult(R);drawIO(R);drawTalk(R);save()}
+
+/* ================= Controls ================= */
+function drawChips(){
+  $("examples").innerHTML=`<span class="eyebrow">Start from a piece of work</span>`+GROUPS.map((g,gi)=>`<div class="grp"><span class="note">${g}</span><div class="chips">${EXAMPLES.filter(e=>e.id!=="own"&&kindOf(e.kind).g===gi).map(e=>`<button class="chip" data-ex="${e.id}" aria-pressed="${e.id===S.ex}" title="${esc(kindOf(e.kind).n)}">${esc(e.name)}</button>`).join("")}</div></div>`).join("")+`<div class="grp"><span class="note">Or start blank</span><div class="chips"><button class="chip" data-ex="own" aria-pressed="${S.ex==="own"}">My own idea</button></div></div>`+`<div class="grp"><span class="note">Kind of work${S.ex==="own"?": choose one":""}</span><div class="chips">${KINDS.map(k=>`<button class="chip sm" data-kind="${k.id}" aria-pressed="${S.kind===k.id}">${k.n}</button>`).join("")}</div></div>`;
+  $("examples").querySelectorAll("[data-ex]").forEach(b=>b.addEventListener("click",()=>{const lens=S.lens;S=Object.assign(load(b.dataset.ex),{lens});$("idea-name").value=S.name;drawChips();drawDials();drawGain();update();if(S.ex==="own")$("idea-name").focus()}));
+  $("examples").querySelectorAll("[data-kind]").forEach(b=>b.addEventListener("click",()=>{S.kind=b.dataset.kind;drawChips();drawDials();update()}));
+}
+function drawDials(){const u=unit();$("dials").innerHTML=DIALS.map(x=>`<div class="dial"><span class="dl"><label for="d-${x.id}">${esc(x.q.replace("{u}",u))}</label><button class="i" data-i="d:${x.id}" aria-label="About: ${esc(x.q.replace("{u}",u))}">i</button></span><input type="range" id="d-${x.id}" data-d="${x.id}" min="1" max="5" step="1" value="${S.d[x.id]}" aria-valuetext="${esc(x.stops[S.d[x.id]-1])}"><span class="now" id="now-${x.id}">${esc(x.stops[S.d[x.id]-1])}</span></div>`).join("");
+  $("dials").querySelectorAll("input").forEach(el=>el.addEventListener("input",()=>{const x=DIALS.find(q=>q.id===el.dataset.d);S.d[x.id]=+el.value;$("now-"+x.id).textContent=x.stops[el.value-1];el.setAttribute("aria-valuetext",x.stops[el.value-1]);update()}))}
+function drawGain(){$("gain").innerHTML=GAINS.map(([k,n])=>`<button class="chip sm" data-gain="${k}" aria-pressed="${S.gain===k}">${n}</button>`).join("");
+  $("gain").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{S.gain=b.dataset.gain;drawGain();update()}))}
+function drawLens(){$("lens").innerHTML=Object.keys(LENSES).map(k=>`<button class="chip sm" data-l="${k}" aria-pressed="${S.lens===k}">${LENSES[k].n}</button>`).join("");
+  $("lens").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{S.lens=b.dataset.l;drawLens();drawA(R);drawLensP(R);save()}))}
+$("idea-name").placeholder="Name your idea";$("idea-name").value=S.name;
+$("idea-name").addEventListener("input",e=>{S.name=e.target.value;save()});
+$("guide").innerHTML=CARDS.map((c,i)=>`<button class="fc" aria-expanded="false" data-c="${i}"><b>${esc(c.t)}</b><span class="teaser">${esc(c.s)}</span><span class="back" hidden>${c.b}</span></button>`).join("");
+$("guide").querySelectorAll(".fc").forEach(b=>b.addEventListener("click",()=>{const o=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",!o);b.querySelector(".back").hidden=o}));
+$("copy").addEventListener("click",()=>{const t=sheetText(R),fb=()=>{$("copy-msg").textContent="Copying is blocked here. Select the sheet above and copy it with your keyboard."};
+  try{navigator.clipboard.writeText(t).then(()=>{$("copy-msg").textContent="Copied."},fb)}catch(e){fb()}});
+
+/* info popover */
+const pop=$("pop");
+function info(k){if(k.startsWith("d:")){const x=DIALS.find(d=>d.id===k.slice(2));return{t:x.q.replace("{u}",unit()),d:x.d,e:x.e}}return INFO[k]}
+function showPop(b){const x=info(b.dataset.i);if(!x)return;pop.innerHTML=`<b>${esc(x.t)}</b><span>${esc(x.d)}</span>${x.e?`<span class="eg">For example: ${esc(x.e)}</span>`:""}`;pop.hidden=false;
+  const r=b.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight,vw=document.documentElement.clientWidth;
+  let left=r.left+scrollX+r.width/2-pw/2;left=Math.max(scrollX+12,Math.min(left,scrollX+vw-pw-12));
+  let top=r.bottom+scrollY+8;if(r.bottom+ph+16>innerHeight&&r.top>ph+16)top=r.top+scrollY-ph-8;
+  pop.style.left=left+"px";pop.style.top=top+"px"}
+const hidePop=()=>{pop.hidden=true};
+document.addEventListener("mouseover",e=>{const b=e.target.closest&&e.target.closest(".i");if(b)showPop(b)});
+document.addEventListener("mouseout",e=>{if(e.target.closest&&e.target.closest(".i"))hidePop()});
+document.addEventListener("focusin",e=>{const b=e.target.closest&&e.target.closest(".i");if(b)showPop(b)});
+document.addEventListener("focusout",e=>{if(e.target.closest&&e.target.closest(".i"))hidePop()});
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".i");if(b){e.preventDefault();e.stopPropagation();showPop(b)}else hidePop()},true);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){hidePop();if(!$("coach").hidden)endTour()}});
+
+/* guided path */
+let beat=-1;
+function showBeat(i){beat=i;const[k,t]=TOUR[i];document.body.classList.add("touring");document.querySelectorAll("[data-tour]").forEach(el=>el.classList.toggle("spot",el.dataset.tour===k));
+  $("coach").hidden=false;$("coach-n").textContent=`Step ${i+1} of ${TOUR.length}`;$("coach-t").textContent=t;$("coach-back").disabled=i===0;$("coach-next").textContent=i===TOUR.length-1?"Done":"Next";
+  const el=document.querySelector(`[data-tour="${k}"]`);if(el)el.scrollIntoView({block:"center",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}
+function endTour(){beat=-1;document.body.classList.remove("touring");document.querySelectorAll(".spot").forEach(el=>el.classList.remove("spot"));$("coach").hidden=true}
+$("tour-start").addEventListener("click",()=>showBeat(0));
+$("coach-next").addEventListener("click",()=>beat<TOUR.length-1?showBeat(beat+1):endTour());
+$("coach-back").addEventListener("click",()=>{if(beat>0)showBeat(beat-1)});
+$("coach-end").addEventListener("click",endTour);
+
+drawChips();drawDials();drawGain();drawLens();update();
+</script>
+
+</body></html>
